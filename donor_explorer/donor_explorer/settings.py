@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f0uf_o(rju%d0nmy4nn=0w6!t303gqwq(k_nhv^ue7njgd9&i%'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -81,25 +81,25 @@ WSGI_APPLICATION = 'donor_explorer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=config('DATABASE_URL')
-#     )
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'donor_explorer',
-        'USER': 'beep',
-        'PASSWORD': 'beepbeep',
-        'HOST': 'localhost'
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-DATABASES['default'] = dj_database_url.config(default='postgres://mdftkxifpzwams:ac6f3b1cda3a6494b8f6b03c9c37e223624e43d0cbd857b9c5f2554c4b0b213b@ec2-54-225-107-174.compute-1.amazonaws.com:5432/d9qn5vjvoo4963')
-db_from_env = dj_database_url.config()
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'donor_explorer',
+#         'USER': 'beep',
+#         'PASSWORD': 'beepbeep',
+#         'HOST': 'localhost'
+#     }
+# }
+
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'] = dj_database_url.config(default=config('DATABASE_URL'))
+# db_from_env = dj_database_url.config()
 
 
 REST_FRAMEWORK = {
@@ -144,6 +144,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Static files (CSS, JavaScript, Images)
