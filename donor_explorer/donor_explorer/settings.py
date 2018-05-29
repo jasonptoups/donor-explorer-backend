@@ -81,21 +81,26 @@ WSGI_APPLICATION = 'donor_explorer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=config('DATABASE_URL')
+#     )
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'donor_explorer',
+        'USER': 'beep',
+        'PASSWORD': 'beepbeep',
+        'HOST': 'localhost'
+    }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'donor_explorer',
-#         'USER': 'beep',
-#         'PASSWORD': 'beepbeep',
-#         'HOST': 'localhost'
-#     }
-# }
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+DATABASES['default'] = dj_database_url.config(default='postgres://mdftkxifpzwams:ac6f3b1cda3a6494b8f6b03c9c37e223624e43d0cbd857b9c5f2554c4b0b213b@ec2-54-225-107-174.compute-1.amazonaws.com:5432/d9qn5vjvoo4963')
+db_from_env = dj_database_url.config()
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
