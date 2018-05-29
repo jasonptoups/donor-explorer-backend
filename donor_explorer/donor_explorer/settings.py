@@ -87,15 +87,15 @@ DATABASES = {
     )
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'donor_explorer',
-        'USER': 'beep',
-        'PASSWORD': 'beepbeep',
-        'HOST': 'localhost'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'donor_explorer',
+#         'USER': 'beep',
+#         'PASSWORD': 'beepbeep',
+#         'HOST': 'localhost'
+#     }
+# }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
