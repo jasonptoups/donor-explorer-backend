@@ -269,6 +269,178 @@ urlpatterns = [
 ```
 The ```<int:pk>``` refers to the pk search that we may run to get the detail views. Be sure to define the ```int``` as ```pk```, or else it won't work. Once this is done, we can test it. Go to your terminal and run ```python manage.py runserver```. Then go to localhost:8000/api/donors/saved-donors and you should see your list of donors come back!
 
-## Deployment
+# Deployment
 I'm now going to deploy. I'm going to follow a tutorial at https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
 
+That tutorial is good, but it misses a few steps that a newbie like me needed help with. We're gonna take this nice and slow:  
+
+## Make some new files and directories
+To start, let's take a look at my directory. Here are all the files I have. Start by replicating this exactly. You will probably need to create a ```Procfile``` (which is just a file with no ending), ```static/``` directory and an empty ```.keep``` file in there (empty directories are normally ignored by git), and a ```runtime.txt``` file next to ```manage.py```. Do not create the ```staticfiles/``` directory. We will get there
+```
+.
+├── Procfile
+├── README.md
+├── donor_explorer
+│   ├── donor_explorer
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── settings.py
+│   │   ├── static
+│   │   │   ├── .keep
+│   │   ├── staticfiles
+│   │   │   ├── admin
+│   │   │   │   ├── css
+│   │   │   │   ├── fonts
+│   │   │   │   ├── img
+│   │   │   │   └── js
+│   │   │   ├── rest_framework
+│   │   │   │   ├── css
+│   │   │   │   ├── docs
+│   │   │   │   ├── fonts
+│   │   │   │   ├── img
+│   │   │   │   └── js
+│   │   │   └── staticfiles.json
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── donors
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── migrations/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── manage.py
+│   └── runtime.txt
+├── requirements.txt
+└── what-i-did.md
+```
+
+## Install dependencies
+Next, let's install a bunch of stuff:
+```bash
+$ pip install django-cors-headers
+$ pip install gunicorn
+$ pip install python-decouple
+$ pip install whitenoise
+$ pip install dj-database-url
+$ pip install django-cors-headers
+$ pip freeze > requirements.txt
+# Make sure you run the last command in the same directory that has your existing requirements.txt file or else you will create two, which is not good.
+```
+
+## Configuration
+Now let's do some configuration:
+1. In your Procfile, add the following line of code:
+```
+web: gunicorn --pythonpath donor_explorer donor_explorer.wsgi
+```
+  * Replace ```donor_explorer``` with your project name
+
+2. In the runtime.txt file, add the following code:
+```
+python-3.6.5
+```
+3. Open Settings.py and make the following changes:
+```python
+import dj_database_url
+from decouple import config
+
+
+ALLOWED_HOSTS = ['*']
+
+# Application definition
+INSTALLED_APPS = [
+    ...,
+    'corsheaders'
+]
+
+MIDDLEWARE = [
+    ...,
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
+]
+
+# Internationalization
+# https://docs.djangoproject.com/en/2.0/topics/i18n/
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+```
+
+4. In your wsgi.py file, update the code to look like:
+```python
+import os
+
+from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "donor_explorer.settings")
+
+application = get_wsgi_application()
+application = DjangoWhiteNoise(application)
+```
+
+## Create Static files
+You should have already created a directory in your project directory called ```static``` and add a ```.keep``` file inside there. That file can be empty. Before we proceed, we need to make sure our migrations have been created, run migrations, and collect static assets. In your CLI:
+```bash
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py collectstatic
+# If you get asked a question about overwriting, enter 'yes'
+```
+
+## Create Heroku App and Configure Settings
+Before continuing, commit your work to your github. Then in bash from the top most directory:
+```bash
+heroku login
+# log in to your heroku account. 
+heroku create project-name
+heroku addons:create heroku-postgresql:hobby-dev
+# this will create a postgres database that is empty
+```
+
+Go to your heroku.com and log in to your account. Find your new project and click settings. Click on Display Config Vars. Add a new variable called ```SECRET_KEY``` and copy-paste the text from your existing SECRET_KEY variable in your ```settings.py``` file.  
+
+Then, in settings.py, update the following:
+```python
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
+
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config('DEBUG', default=False, cast=bool)
+```
+
+## Push to Heroku
+Open your bash, add, commit, and push to heroku:
+```bash
+$ git push heroku master
+$ heroku run python donor_explorer/manage.py migrate
+$ heroku run python donor_explorer/manage.py createsuperuser
+```
+Note that you have to push to heroku from the master branch. Also, I always push to origin before pushing to heroku. In this example, I run createsuperuser because all the seed data is gone. Doing this gives you a log in to use with the admin so you can add new seed data.  
+
+Go to your app at https://donor-explorer.herokuapp.com/admin/ and make sure it's working!
