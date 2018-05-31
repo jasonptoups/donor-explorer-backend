@@ -20,7 +20,8 @@ class SavedDonorSerializer(serializers.ModelSerializer):
                   'mode_donation',
                   'total_donations',
                   'percent_dem',
-                  'user')
+                  'committees',
+                  'user',)
 
 
 class UserSerializer(serializers.ModelSerializer):

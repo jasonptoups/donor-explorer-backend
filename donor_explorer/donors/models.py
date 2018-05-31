@@ -14,6 +14,7 @@ class SavedDonor(models.Model):
     mode_donation = models.IntegerField()
     total_donations = models.IntegerField()
     percent_dem = models.CharField(max_length=50, null=True, blank=True)
+    committees = models.TextField()
     user = models.ForeignKey(
           User,
           on_delete=models.CASCADE,
