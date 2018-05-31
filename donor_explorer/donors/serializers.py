@@ -19,6 +19,7 @@ class SavedDonorSerializer(serializers.ModelSerializer):
                   'max_donation',
                   'mode_donation',
                   'total_donations',
+                  'percent_dem',
                   'user')
 
 

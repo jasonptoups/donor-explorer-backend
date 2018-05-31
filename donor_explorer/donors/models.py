@@ -13,6 +13,7 @@ class SavedDonor(models.Model):
     max_donation = models.IntegerField()
     mode_donation = models.IntegerField()
     total_donations = models.IntegerField()
+    percent_dem = models.CharField(max_length=50, null=True, blank=True)
     user = models.ForeignKey(
           User,
           on_delete=models.CASCADE,
