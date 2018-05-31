@@ -12,16 +12,19 @@ from .models import SavedDonor
 class SavedDonorList(generics.ListCreateAPIView):
     queryset = SavedDonor.objects.all()
     serializer_class = SavedDonorSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class SavedDonorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SavedDonor.objects.all()
     serializer_class = SavedDonorSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class CreateAuth(generics.CreateAPIView):
