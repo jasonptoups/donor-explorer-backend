@@ -1,6 +1,8 @@
 # Donor Explorer Backend
 
 ## Repos
+Front-end: [https://github.com/jasonptoups/donor-explorer](https://github.com/jasonptoups/donor-explorer)  
+Back-end: [https://github.com/jasonptoups/donor-explorer-backend](https://github.com/jasonptoups/donor-explorer-backend)  
 
 ## Assignment
 I made this for my final project at General Assembly. This was a solo project. The assignment was to make an app in 1 week using any technologies we wish. I was able to build this app with no instructor-help, instead relying on many, many Google searches.  
