@@ -80,7 +80,8 @@ The deployed front-end is on github pages while the backend is on Heroku. I am u
 ### Specific Learnings
 I taught myself how to set up JWTs on a Django REST Framework for this. I followed several tutorials to do so:
 * [Full stack Django: Quick start with JWT auth and React/Redux (Part I-III)](https://medium.com/netscape/full-stack-django-quick-start-with-jwt-auth-and-react-redux-part-i-37853685ab57)
-* [Token-based authentication with Django and React](http://geezhawk.github.io/user-authentication-with-react-and-django-rest-framework)  
+* [Token-based authentication with Django and React](http://geezhawk.github.io/user-authentication-with-react-and-django-rest-framework)     
+
 This was only the second time I have been using Django REST framework, so I learned a lot about that in general. I took detailed notes on all my process steps and wrote them in a markdown file, which you can view in the markdown called [what-i-did](https://github.com/jasonptoups/donor-explorer-backend/blob/master/what-i-did.md). I plan to clean this up a bit and publish it as a simple blog post.  
 
 ## Future improvements
